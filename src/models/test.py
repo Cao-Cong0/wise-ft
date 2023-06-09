@@ -8,9 +8,10 @@ from src.models import utils
 from src.datasets.common import get_dataloader, maybe_dictionarize
 
 import src.datasets as datasets
+from src.models.modeling import ClassificationHead, ImageEncoder, ImageClassifier
 
 
-def eval_single_dataset(image_classifier, dataset, args):
+def test_single_dataset(image_classifier, dataset, args):
     if args.freeze_encoder:
         model = image_classifier.classification_head
         input_key = 'features'
@@ -77,20 +78,21 @@ def eval_single_dataset(image_classifier, dataset, args):
     
     return metrics
 
-def evaluate(image_classifier, args):
-    if args.eval_datasets is None:
+def test(args):
+    if args.test_datasets is None:
         return
     info = vars(args)
-    for i, dataset_name in enumerate(args.eval_datasets):
-        print('Evaluating on', dataset_name)
+    image_classifier = ImageClassifier.load(args.test_checkpoint)
+    for i, dataset_name in enumerate(args.test_datasets):
+        print('Testing on', dataset_name)
         dataset_class = getattr(datasets, dataset_name)
         dataset = dataset_class(
             image_classifier.val_preprocess,
-            location=args.eval_data_location,
+            location=args.test_data_location,
             batch_size=args.batch_size
         )
 
-        results = eval_single_dataset(image_classifier, dataset, args)
+        results = test_single_dataset(image_classifier, dataset, args)
 
         if 'top1' in results:
             print(f"{dataset_name} Top-1 accuracy: {results['top1']:.4f}")

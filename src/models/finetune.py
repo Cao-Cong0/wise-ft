@@ -42,7 +42,7 @@ def finetune(args):
     dataset_class = getattr(datasets, args.train_dataset)
     dataset = dataset_class(
         preprocess_fn,
-        location=args.data_location,
+        location=args.train_data_location,
         batch_size=args.batch_size
     )
     num_batches = len(dataset.train_loader)

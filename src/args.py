@@ -6,11 +6,31 @@ import torch
 def parse_arguments():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--data-location",
+        "--train_data-location",
         type=str,
         default=os.path.expanduser('~/data'),
         help="The root directory for the datasets.",
     )
+    parser.add_argument(
+        "--eval_data-location",
+        type=str,
+        default=os.path.expanduser('~/data'),
+        help="The root directory for the datasets.",
+    )    
+    parser.add_argument(
+        "--test_data-location",
+        type=str,
+        default=os.path.expanduser('~/data'),
+        help="The root directory for the datasets.",
+    )   
+    parser.add_argument(
+        "--test-datasets",
+        default=None,
+        type=lambda x: x.split(","),
+        help="Which datasets to use for evaluation. Split by comma, e.g. CIFAR101,CIFAR102."
+             " Note that same model used for all datasets, so much have same classnames"
+             "for zero shot.",
+    )   
     parser.add_argument(
         "--eval-datasets",
         default=None,
@@ -136,6 +156,13 @@ def parse_arguments():
         default=1e-8,
         help="TODO",
     )
+    parser.add_argument(
+        "--test_checkpoint",
+        type=str,
+        default=None,
+        help="Optionally load a single model for testing.",
+    )
+
     parsed_args = parser.parse_args()
     parsed_args.device = "cuda" if torch.cuda.is_available() else "cpu"
     

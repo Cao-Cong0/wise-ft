@@ -23,7 +23,7 @@ def get_zeroshot_classifier(args, clip_model):
     dataset_class = getattr(datasets, args.train_dataset)
     dataset = dataset_class(
         None,
-        location=args.data_location,
+        location=args.eval_data_location,
         batch_size=args.batch_size,
         # classnames=args.classnames
         classnames = args.classnames.split(',')
